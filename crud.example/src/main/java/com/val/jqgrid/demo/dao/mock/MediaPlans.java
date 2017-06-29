@@ -1,28 +1,48 @@
 package com.val.jqgrid.demo.dao.mock;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import com.val.jqgrid.demo.view.Item;
 import com.val.jqgrid.demo.view.MediaPlan;
 
-public class DataStore {
+public class MediaPlans {
 	
 	private static Logger LOG = Logger.getLogger(MediaPlans.class);
 	
 	/*
-	private MediaPlans mediaPlans;
+	private Map<Integer, MediaPlan> list;
 	
-	public DataStore() {
-		LOG.debug("inside DataStore ctor");
-		mediaPlans = new MediaPlans();
+	public MediaPlans () {
+		LOG.debug("inside MediaPlans ctor");
+		list = new HashMap<Integer, MediaPlan>();
+	}
+
+	public Map<Integer, MediaPlan> getList() {
+		return list;
+	}
+
+	public void setList(Map<Integer, MediaPlan> list) {
+		this.list = list;
+	}
+	*/
+	
+	//private MediaPlans mediaPlans;
+	private Map<Integer, MediaPlan> list;
+	
+	public MediaPlans() {
+		LOG.debug("inside MediaPlans ctor");
+		list = new HashMap<Integer, MediaPlan>();
 	}
 	
 	public MediaPlan addMediaPlan (Integer id) {
 		
 		MediaPlan mediaPlan = null;
 		
-		if(mediaPlans.getList().containsKey(id)) {
-			return mediaPlans.getList().get(id);
+		if(list.containsKey(id)) {
+			return list.get(id);
 		}
 		else {
 			mediaPlan = new MediaPlan(id);
@@ -46,6 +66,5 @@ public class DataStore {
 	public void deleteMediaPlanItem(Integer mediaPlanId, Integer itemId) {
 		
 	}
-	*/
-
+	
 }

@@ -41,7 +41,7 @@
     
     <util:properties id="appProperties" location="WEB-INF/application.properties" />
     
-    <bean id="dataStore" class="com.val.jqgrid.demo.dao.mock.DataStore">
+    <bean id="dataStore" class="com.val.jqgrid.demo.dao.mock.MediaPlans">
 	</bean>
 	
 </beans>
