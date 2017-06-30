@@ -50,11 +50,14 @@
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
 	
-    <servlet-mapping>
+	<servlet-mapping>
        <servlet-name>Dispatcher</servlet-name>
        <url-pattern>*.do</url-pattern>
-       <!-- <url-pattern>/*</url-pattern> -->
-       <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+       <servlet-name>Dispatcher</servlet-name>
+       <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
   
 </web-app>

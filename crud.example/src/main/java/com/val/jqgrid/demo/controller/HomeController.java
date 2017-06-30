@@ -14,13 +14,24 @@ public class HomeController {
 	
 	private static Logger LOG = Logger.getLogger(HomeController.class);
 	
-	@RequestMapping("/home")
+	@RequestMapping("/home.do")
 	public ModelAndView getHome()
 	{
 		LOG.debug("Inside HomeController.getHome()");
 		//ModelAndView mv = new ModelAndView("home");
 		
 		ModelAndView mv = new ModelAndView("home", "codeVer", this._codeVersion);
+		
+		return mv;
+	}
+	
+	@RequestMapping("/mediaplan.do")
+	public ModelAndView viewMediaPlan()
+	{
+		LOG.debug("Inside HomeController.viewMediaPlan()");
+		ModelAndView mv = new ModelAndView("mediaplan");
+		
+		//ModelAndView mv = new ModelAndView("home", "codeVer", this._codeVersion);
 		
 		return mv;
 	}

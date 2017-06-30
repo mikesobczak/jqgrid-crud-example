@@ -1,14 +1,18 @@
 package com.val.jqgrid.demo.view;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MediaPlan {
 	
 	private Integer id;
-	private Map<Integer, Item> itemList;
+	private Map<Integer, Item> itemMap;
 	
 	public MediaPlan(Integer id) {
 		this.id = id;
+		itemMap = new LinkedHashMap<Integer, Item>();
 	}
 
 	public Integer getId() {
@@ -19,12 +23,16 @@ public class MediaPlan {
 		this.id = id;
 	}
 
-	public Map<Integer, Item> getItemList() {
-		return itemList;
+	public Map<Integer, Item> getItemMap() {
+		return itemMap;
 	}
 
-	public void setItemList(Map<Integer, Item> itemList) {
-		this.itemList = itemList;
+	public void setItemMap(Map<Integer, Item> itemMap) {
+		this.itemMap = itemMap;
+	}
+	
+	public List<Item> getItems() {
+		return new ArrayList<Item>(itemMap.values());
 	}
 
 }

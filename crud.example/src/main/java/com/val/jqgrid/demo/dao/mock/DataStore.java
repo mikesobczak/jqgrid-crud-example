@@ -2,12 +2,13 @@ package com.val.jqgrid.demo.dao.mock;
 
 import org.apache.log4j.Logger;
 
+import com.val.jqgrid.demo.service.MediaPlanDataService;
 import com.val.jqgrid.demo.view.Item;
 import com.val.jqgrid.demo.view.MediaPlan;
 
 public class DataStore {
 	
-	private static Logger LOG = Logger.getLogger(MediaPlans.class);
+	private static Logger LOG = Logger.getLogger(MediaPlanDataService.class);
 	
 	/*
 	private MediaPlans mediaPlans;
