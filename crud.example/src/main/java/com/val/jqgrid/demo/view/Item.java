@@ -55,6 +55,18 @@ public class Item {
 		this.id = id;
 	}
 	
-	
-	
+	public String toString() {
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("id : " + id);
+		sb.append("productName : " + productName);
+		sb.append("uom : " + uom);
+		sb.append("startDate : " + startDate);
+		sb.append("qty : " + qty);
+		sb.append("rate : " + rate);
+		sb.append("investment : " + investment);
+		
+		return sb.toString();
+	}
 }

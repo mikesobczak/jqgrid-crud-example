@@ -6,13 +6,19 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.val.jqgrid.demo.payload.request.AddItemRequest;
+import com.val.jqgrid.demo.payload.response.AddItemResponse;
 import com.val.jqgrid.demo.payload.response.GetMediaPlanResponse;
 import com.val.jqgrid.demo.payload.response.GetTestResponse;
 import com.val.jqgrid.demo.payload.response.Payload;
@@ -20,7 +26,7 @@ import com.val.jqgrid.demo.service.MediaPlanDataService;
 import com.val.jqgrid.demo.view.Item;
 import com.val.jqgrid.demo.view.MediaPlan;
 
-@Controller
+@RestController
 public class WebServicesController {
 	
 	private static Logger LOG = Logger.getLogger(WebServicesController.class);
@@ -28,7 +34,6 @@ public class WebServicesController {
 	@Autowired
 	private MediaPlanDataService mediaPlanDataService;
 
-	@ResponseBody
 	@RequestMapping(value="/services/mediaplan/{id}", method = RequestMethod.GET)
 	public GetMediaPlanResponse getMediaPlan(@PathVariable(value = "id") String id) {
 		
@@ -66,7 +71,6 @@ public class WebServicesController {
 		return result;
 	}
 	
-	@ResponseBody
 	@RequestMapping(value="/services/mediaplan", method = RequestMethod.GET)
 	public GetMediaPlanResponse getMediaPlan(@RequestParam("id") String id, @RequestParam("page") String page, @RequestParam("rows") String rows, HttpSession session) {
 		
@@ -104,7 +108,37 @@ public class WebServicesController {
 		return result;
 	}
 	
-	@ResponseBody
+	@RequestMapping(value="/services/mediaplan/additem", method = RequestMethod.POST)
+	//@RequestMapping(value="/services/mediaplan/additem")
+	public AddItemResponse addItemToMediaPlan(@RequestBody AddItemRequest request) {
+		
+		LOG.debug("inside addItemToMediaPlan");
+		
+		Integer mediaPlanId = request.getMediaPlanId();
+		
+		LOG.debug("media plan id = " + request.getMediaPlanId());
+		
+		AddItemResponse result = new AddItemResponse();
+		
+		try {
+			Integer itemId = mediaPlanDataService.addItemToMediaPlan(mediaPlanId, request.getItem());
+			
+			result.setPayload("Item added successfully");
+			result.setReturnCode(200);
+			result.setException("");
+			
+		}
+		catch (Exception e) {
+			LOG.error(e.getMessage());
+			
+			result.setPayload("Item not added");
+			result.setReturnCode(500);
+			result.setException(e.getMessage());
+		}
+		
+		return result;
+	}
+	
 	@RequestMapping(value="/services/test", method = RequestMethod.GET)
 	public GetTestResponse getTest() {
 		

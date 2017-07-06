@@ -1,13 +1,11 @@
 package com.val.jqgrid.demo.service;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.val.jqgrid.demo.manager.MediaPlanDataManager;
 import com.val.jqgrid.demo.view.Item;
 import com.val.jqgrid.demo.view.MediaPlan;
 
@@ -15,116 +13,84 @@ public class MediaPlanDataService {
 	
 	private static Logger LOG = Logger.getLogger(MediaPlanDataService.class);
 	
-	private Map<Integer, MediaPlan> list;
+	@Autowired
+	private MediaPlanDataManager mediaPlanDataManager;
 	
 	public MediaPlanDataService() {
 		LOG.debug("inside MediaPlanDataService ctor");
-		list = new HashMap<Integer, MediaPlan>();
-		
-		// Load an initial media plan
-		MediaPlan mediaPlan = new MediaPlan(12345);
-		
-		Map<Integer, Item> itemMap = new LinkedHashMap<Integer, Item>();
-		
-		Calendar date = Calendar.getInstance();
-		Date startDate = date.getTime();
-		
-		Item item = new Item();
-		item.setId(1);
-		item.setInvestment(31250);
-		item.setProductName("VDP + Email");
-		item.setQty(125000);
-		item.setRate(25);
-		item.setUom("Each");
-		item.setStartDate(startDate);
-		itemMap.put(item.getId(), item);
-		
-		mediaPlan.setItemMap(itemMap);
-		
-		list.put(mediaPlan.getId(), mediaPlan);
 	}
 	
 	public MediaPlan getMediaPlan (Integer id) throws Exception {
-		MediaPlan mediaPlan = null;
-		
-		if(list.containsKey(id)) {
-			mediaPlan = list.get(id);
-		}
-		else {
-			throw new Exception ("Media plan not found");
-		}
-		
-		return mediaPlan;
+		return mediaPlanDataManager.getMediaPlan(id);
 	}
 	
 	public MediaPlan addMediaPlan (Integer id) throws Exception {
-		
-		LOG.debug("inside addMediaPlan");
-		
-		MediaPlan mediaPlan = null;
-		
-		if(list.containsKey(id)) {
-			throw new Exception("Media Plan already exists");
-		}
-		else {
-			mediaPlan = new MediaPlan(id);
-			list.put(id, mediaPlan);
-		}
-		
-		return mediaPlan;
+		return mediaPlanDataManager.addMediaPlan(id);
 	}
 	
 	public Integer addItemToMediaPlan(Integer mediaPlanId, Item item) throws Exception {
-		Integer nextItemId;
 		
-		LOG.debug("inside addItemToMediaPlan");
+		validateItemAdd(item);
 		
-		if(list.containsKey(mediaPlanId)) {
-			throw new Exception ("Media Plan not found");
-		}
-		
-		MediaPlan mediaPlan = list.get(mediaPlanId);
-		
-		Map<Integer, Item> itemMap = mediaPlan.getItemMap();
-		
-		nextItemId = itemMap.size() + 1;
-		
-		item.setId(nextItemId);
-		
-		itemMap.put(nextItemId, item);
-		
-		return nextItemId;
+		return mediaPlanDataManager.addItemToMediaPlan(mediaPlanId, item);
 	}
 	
 	public void updateMediaPlanItem(Integer mediaPlanId, Item item) throws Exception {
 		
-		LOG.debug("inside updateMediaPlanItem");
+		validateItemUpdate(item);
 		
-		if(list.containsKey(mediaPlanId)) {
-			throw new Exception ("Media Plan not found");
-		}
-		
-		MediaPlan mediaPlan = list.get(mediaPlanId);
-		
-		Map<Integer, Item> itemMap = mediaPlan.getItemMap();
-		
-		itemMap.put(item.getId(), item);
-		
+		mediaPlanDataManager.updateMediaPlanItem(mediaPlanId, item);
 	}
 	
 	public void deleteMediaPlanItem(Integer mediaPlanId, Integer itemId) throws Exception {
-		
-		LOG.debug("inside deleteMediaPlanItem");
-		
-		if(list.containsKey(mediaPlanId)) {
-			throw new Exception ("Media Plan not found");
+		mediaPlanDataManager.deleteMediaPlanItem(mediaPlanId, itemId);
+	}
+
+	public MediaPlanDataManager getMediaPlanDataManager() {
+		return mediaPlanDataManager;
+	}
+
+	public void setMediaPlanDataManager(MediaPlanDataManager mediaPlanDataManager) {
+		this.mediaPlanDataManager = mediaPlanDataManager;
+	}
+
+	private void validateItemAdd(Item item) throws Exception {
+		validateItemBase(item);
+	}
+	
+	private void validateItemUpdate(Item item) throws Exception { 
+		if(item.getId() == null || item.getId().equals("")) {
+			throw new Exception ("Item id cannot be null");
 		}
 		
-		MediaPlan mediaPlan = list.get(mediaPlanId);
+		validateItemBase(item);
+	}
+	
+	private void validateItemBase(Item item) throws Exception {
 		
-		Map<Integer, Item> itemMap = mediaPlan.getItemMap();
+		if(item.getProductName() == null || item.getProductName().equals("")) {
+			throw new Exception ("product name cannot be null");
+		}
 		
-		itemMap.remove(itemId);
+		if(item.getUom() == null || item.getUom().equals("")) {
+			throw new Exception ("UOM cannot be null");
+		}
+		
+		if(item.getStartDate() == null) {
+			throw new Exception ("Start date cannot be null");
+		}
+		
+		if(item.getQty() == 0) {
+			throw new Exception ("Qty cannot be zero");
+		}
+		
+		if(item.getRate() == 0) {
+			throw new Exception ("Rate cannot be zero");
+		}
+		
+		if(item.getInvestment() == 0) {
+			throw new Exception ("Investment cannot be zero");
+		}
 		
 	}
 	

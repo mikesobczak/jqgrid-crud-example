@@ -48,4 +48,10 @@
     <bean id="mediaPlanDataService" class="com.val.jqgrid.demo.service.MediaPlanDataService">
 	</bean>
 	
+	<bean id="mediaPlanDataManager" class="com.val.jqgrid.demo.manager.MediaPlanDataManager">
+	</bean>
+	
+	<bean id="dataStore" class="com.val.jqgrid.demo.dao.mock.DataStore">
+	</bean>
+	
 </beans>
