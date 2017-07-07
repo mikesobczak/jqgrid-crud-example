@@ -33,6 +33,8 @@ body, th, td
 </style>
 
 <script src="js/jquery-ui-1.11.4.custom/external/jquery/jquery.js" type="text/javascript"></script>
+<script src="js/jquery-ui-1.11.4.custom/jquery-ui.min.js" type="text/javascript"></script>
+
 <script src="js/Guriddo_jqGrid_JS_5.2.1/js/i18n/grid.locale-en.js" type="text/javascript"></script>
 <script src="js/Guriddo_jqGrid_JS_5.2.1/js/jquery.jqGrid.min.js" type="text/javascript"></script>
 
@@ -111,7 +113,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 						var thegrid = $("#jqGrid")[0];
 	                 	thegrid.addJSONData(json);
 	                 	$('.loading').hide();
-		            	}
+		            }
 		        });
 	        
 	    },
@@ -122,31 +124,51 @@ function dateFormatter(cellvalue, options, rowObject) {
 		{ label: 'ID', name: 'id', width: 50, 
 			hidden: true,
 			key: true, 
-			editable: true, 
-			sortable: false,
-			editrules: { edithidden: true } },
+			editable: false, 
+			sortable: false },
 			
 		{ label: 'Product Name', name: 'productName', width: 150, 
 				sortable: false },
 				
 		{ label: 'UOM', name: 'uom', width: 75, 
-				sortable: false },
+				sortable: false,
+				editable: false },
 		
 		{ label: 'Start Date', name: 'startDate', width: 75, 
 				sortable: false,
-				formatter: dateFormatter, align: 'center' },
+				formatter: dateFormatter, 
+				align: 'center',
+				editable: true,
+				edittype:"text",
+				editrules : {required: true},
+				editoptions: {
+                    // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                    // use it to place a third party control to customize the toolbar
+                    dataInit: function (element) {
+                        $(element).datepicker({
+                            id: 'orderDate_datePicker',
+                            dateFormat: 'M/d/yy',
+                            //minDate: new Date(2010, 0, 1),
+                            maxDate: new Date(2020, 0, 1),
+                            showOn: 'focus'
+                        });
+                    }
+                }
+		},
 				
 		{ label: 'Media Plan Id', name: 'fkMediaPlanId', width: 100, 
 			sortable: false,
-			editable: true, 
-			hidden: true,
-			editrules: { edithidden: true } },
+			editable: false, 
+			hidden: true },
 		
 		{ label: 'Qty', name: 'qty', width: 55,
 			sortable: false,
 			formatter : 'number',
 			formatoptions: { thousandsSeparator: ",", decimalPlaces: 0 },
-			align: 'right' },
+			align: 'right',
+			editable: true,
+			editrules : {required: true}
+			},
 		
 		{ label: 'Rate', name: 'rate', width: 50,
 				sortable: false,
@@ -169,6 +191,35 @@ function dateFormatter(cellvalue, options, rowObject) {
 	subGrid: false
 	
 });
+	
+	$('#jqGrid').navGrid('#jqGridPager',
+            // the buttons to appear on the toolbar of the grid
+            { edit: true, add: true, del: true, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            // options for the Edit Dialog
+            {
+                editCaption: "The Edit Dialog",
+                recreateForm: true,
+				checkOnUpdate : true,
+				checkOnSubmit : true,
+                closeAfterEdit: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Add Dialog
+            {
+                closeAfterAdd: true,
+                recreateForm: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Delete Dailog
+            {
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            });
 	
 	
 });
