@@ -79,6 +79,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 
 	$("#jqGrid").jqGrid({
 	
+		/*
 		datatype: function(postdata) {
 		    
 	    	$('#' + 'load_' + 'jqGrid').show();
@@ -117,6 +118,27 @@ function dateFormatter(cellvalue, options, rowObject) {
 		        });
 	        
 	    },
+	    */
+	    loadBeforeSend: function(jqXHR) {
+            //jqXHR.setRequestHeader("Authorization", "Bearer " + sessionId);
+            jqXHR.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+            jqXHR.setRequestHeader("Accept", "application/json");
+            jqXHR.setRequestHeader("VAL", "1");
+        },
+
+        url:'services/mediaplan',
+        editurl: 'services/mediaplan/addupdateitem',
+        
+        datatype: 'json',
+        mtype: 'GET',
+        postData : {'id' : mpId },
+
+        jsonReader : {
+            root:"payload.rows",
+            page: "payload.page",  // the current page
+            total: "payload.total",  // the total # of pages
+            records: "payload.records"  // the total # of records
+        },
 		
 	page: 1, 
 	 colModel: [
@@ -167,7 +189,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 			formatoptions: { thousandsSeparator: ",", decimalPlaces: 0 },
 			align: 'right',
 			editable: true,
-			editrules : {required: true}
+			editrules : {required: true, integer: true, minValue: 1}
 			},
 		
 		{ label: 'Rate', name: 'rate', width: 50,
@@ -185,7 +207,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 	],
 	viewrecords: true,
 	width: 500,
-	height: 500,
+	height: 250,
 	rowNum: 0,
 	pager: "#jqGridPager",
 	subGrid: false
@@ -194,32 +216,89 @@ function dateFormatter(cellvalue, options, rowObject) {
 	
 	$('#jqGrid').navGrid('#jqGridPager',
             // the buttons to appear on the toolbar of the grid
-            { edit: true, add: true, del: true, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            { edit: true, 
+				add: true, 
+				del: true, 
+				search: false, 
+				refresh: false, 
+				view: false, 
+				position: "left", 
+				cloneToTop: false,
+				mtype: 'POST',
+				errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText;
+                	}
+				},
             // options for the Edit Dialog
             {
-                editCaption: "The Edit Dialog",
+                editCaption: "Edit Item",
                 recreateForm: true,
 				checkOnUpdate : true,
 				checkOnSubmit : true,
                 closeAfterEdit: true,
                 errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                }
+                    return 'Error: ' + data.responseText;
+                },
+                ajaxEditOptions: {
+		            beforeSend: function(jqXHR) {
+		            	jqXHR.setRequestHeader("VAL", "1");
+		            }
+		        },
+				editData: {
+	        		mediaPlanId : mpId,
+	        		productName : 'VDP + Email'
+	        	}
+	        	,
+		        onclickSubmit: function (params, postdata){
+		        	//alert('inside onclickSubmit');
+		        	params.editData.uom = 'Flat';
+		        	params.editData.rate = 20.50;
+		        	params.editData.investment = 1000;
+		        	
+		        	return postdata;
+		        }
             },
             // options for the Add Dialog
             {
                 closeAfterAdd: true,
                 recreateForm: true,
                 errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                }
+                    return 'Error: ' + data.responseText;
+                },
+                ajaxEditOptions: {
+		            beforeSend: function(jqXHR) {
+		            	jqXHR.setRequestHeader("VAL", "1");
+		            }
+		        },
+				editData: {
+	        		mediaPlanId : mpId,
+	        		productName : 'VDP + Email'
+	        	},
+		        onclickSubmit: function (params, postdata){
+		        	//alert('inside onclickSubmit');
+		        	params.editData.uom = 'Flat';
+		        	params.editData.rate = 20.50;
+		        	params.editData.investment = 1000;
+		        	
+		        	return postdata;
+		        }
             },
             // options for the Delete Dailog
             {
                 errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                }
-            });
+                    return 'Error: ' + data.responseText;
+                },
+                ajaxEditOptions: {
+		            beforeSend: function(jqXHR) {
+		            	jqXHR.setRequestHeader("VAL", "1");
+		            }
+		        },
+				editData: {
+	        		mediaPlanId : function() { return mpId; }
+	        	}
+            }
+            
+	);
 	
 	
 });

@@ -10,7 +10,7 @@ public class Item {
 	private Date startDate;
 	private int qty;
 	private double rate;
-	private float investment;
+	private double investment;
 	
 	public String getProductName() {
 		return productName;
@@ -42,10 +42,10 @@ public class Item {
 	public void setRate(double rate) {
 		this.rate = rate;
 	}
-	public float getInvestment() {
+	public double getInvestment() {
 		return investment;
 	}
-	public void setInvestment(float investment) {
+	public void setInvestment(double investment) {
 		this.investment = investment;
 	}
 	public Integer getId() {
