@@ -59,13 +59,13 @@ public class Item {
 		
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append("id : " + id);
-		sb.append("productName : " + productName);
-		sb.append("uom : " + uom);
-		sb.append("startDate : " + startDate);
-		sb.append("qty : " + qty);
-		sb.append("rate : " + rate);
-		sb.append("investment : " + investment);
+		sb.append("id : " + id + "\n");
+		sb.append("productName : " + productName + "\n");
+		sb.append("uom : " + uom + "\n");
+		sb.append("startDate : " + startDate + "\n");
+		sb.append("qty : " + qty + "\n");
+		sb.append("rate : " + rate + "\n");
+		sb.append("investment : " + investment + "\n");
 		
 		return sb.toString();
 	}
