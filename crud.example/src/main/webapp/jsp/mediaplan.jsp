@@ -144,7 +144,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 	 colModel: [
 
 		{ label: 'ID', name: 'id', width: 50, 
-			hidden: true,
+			hidden: false,
 			key: true, 
 			editable: false, 
 			sortable: false },
@@ -251,9 +251,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 	        	,
 		        onclickSubmit: function (params, postdata){
 		        	//alert('inside onclickSubmit');
-		        	params.editData.uom = 'Flat';
-		        	params.editData.rate = 20.50;
-		        	params.editData.investment = 1000;
+		        	setPricingFields (params, postdata);
 		        	
 		        	return postdata;
 		        }
@@ -276,9 +274,8 @@ function dateFormatter(cellvalue, options, rowObject) {
 	        	},
 		        onclickSubmit: function (params, postdata){
 		        	//alert('inside onclickSubmit');
-		        	params.editData.uom = 'Flat';
-		        	params.editData.rate = 20.50;
-		        	params.editData.investment = 1000;
+
+		        	setPricingFields (params, postdata);
 		        	
 		        	return postdata;
 		        }
@@ -286,7 +283,9 @@ function dateFormatter(cellvalue, options, rowObject) {
             // options for the Delete Dailog
             {
                 errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText;
+                	console.log('data:' + data);
+                	//return 'Error: ' + data.responseText;
+                    return 'Error: data not processed';
                 },
                 ajaxEditOptions: {
 		            beforeSend: function(jqXHR) {
@@ -303,6 +302,74 @@ function dateFormatter(cellvalue, options, rowObject) {
 	
 });
 
+    </script>
+    
+    
+    <script type="text/javascript">
+    
+    var pricingInfo = {};
+    
+    pricingInfo.entries = [];
+    
+    var entry = {};
+    entry.qty = 99999;
+    entry.amount = 1250;
+    entry.uom = 'FLAT';
+    pricingInfo.entries.push(entry);
+    
+    entry = {};
+    entry.qty = 250000;
+    entry.amount = 25;
+    entry.uom = 'CPM';
+    pricingInfo.entries.push(entry);
+    
+    entry = {};
+    entry.qty = 500000;
+    entry.amount = 19;
+    entry.uom = 'CPM';
+    pricingInfo.entries.push(entry);
+    
+    entry = {};
+    entry.qty = 750000;
+    entry.amount = 15;
+    entry.uom = 'CPM';
+    pricingInfo.entries.push(entry);
+    
+    entry = {};
+    entry.qty = 1000000;
+    entry.amount = 14;
+    entry.uom = 'CPM';
+    pricingInfo.entries.push(entry);
+    
+    entry = {};
+    entry.qty = 3000000;
+    entry.amount = 13;
+    entry.uom = 'CPM';
+    pricingInfo.entries.push(entry);
+    
+    </script>
+    
+    <script type="text/javascript">
+    
+    function setPricingFields (params, postdata){
+    	
+    	for(var i = 0; i < pricingInfo.entries.length; i++) {
+    		if(postdata.qty <= pricingInfo.entries[i].qty) {
+    			params.editData.uom = pricingInfo.entries[i].uom;
+    			params.editData.rate = pricingInfo.entries[i].amount;
+    			params.editData.investment = (pricingInfo.entries[i].amount * postdata.qty) / 1000;
+    		}
+    	}
+    	
+    	if(params.editData.investment === undefined) {
+    		var index = pricingInfo.entries.length - 1
+    		params.editData.uom = pricingInfo.entries[index].uom;
+			params.editData.rate = pricingInfo.entries[index].amount;
+			params.editData.investment = (pricingInfo.entries[index].amount * postdata.qty) / 1000;
+    	}
+    	
+    	return params;
+    }
     </script>
     
 </body>

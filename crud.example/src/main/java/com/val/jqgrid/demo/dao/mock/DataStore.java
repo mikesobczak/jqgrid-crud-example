@@ -36,7 +36,7 @@ public class DataStore {
 		item.setProductName("VDP + Email");
 		item.setQty(125000);
 		item.setRate(25);
-		item.setUom("Each");
+		item.setUom("CPM");
 		item.setStartDate(startDate);
 		itemMap.put(item.getId(), item);
 		
@@ -115,6 +115,8 @@ public class DataStore {
 		
 		LOG.debug("inside updateMediaPlanItem");
 		
+		LOG.debug("current list: " + list);
+		
 		if(list.containsKey(mediaPlanId) == false) {
 			throw new Exception ("Media Plan not found");
 		}
@@ -124,6 +126,10 @@ public class DataStore {
 		Map<Integer, Item> itemMap = mediaPlan.getItemMap();
 		
 		itemMap.put(item.getId(), item);
+		
+		list.put(mediaPlanId, mediaPlan);
+		
+		LOG.debug("updated list: " + list);
 		
 	}
 	

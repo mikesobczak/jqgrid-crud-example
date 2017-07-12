@@ -58,4 +58,18 @@ public class MediaPlan {
 		this.ihd = ihd;
 	}
 	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("mediaPlan > " + "\n");
+		sb.append("ihd : " + ihd + "\n");
+		sb.append("items - : " + "\n");
+		
+		for(Map.Entry<Integer, Item> entry : itemMap.entrySet()) {
+			sb.append(entry.getValue());
+		}
+		
+		return sb.toString();
+	}
+	
 }

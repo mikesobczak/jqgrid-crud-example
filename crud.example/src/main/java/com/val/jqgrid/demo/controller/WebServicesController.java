@@ -36,7 +36,8 @@ public class WebServicesController {
 	
 	private static Logger LOG = Logger.getLogger(WebServicesController.class);
 	
-	DateFormat format = new SimpleDateFormat("MMM/dd/yyyy", Locale.ENGLISH);
+	DateFormat addFormat = new SimpleDateFormat("MMM/dd/yyyy", Locale.ENGLISH);
+	DateFormat editFormat = new SimpleDateFormat("MM/dd/yy", Locale.ENGLISH);
 	
 	@Autowired
 	private MediaPlanDataService mediaPlanDataService;
@@ -237,9 +238,9 @@ public class WebServicesController {
 		
 		Integer mediaPlanId = new Integer(mpId);
 		
-		Date date = format.parse(startDate);
 		
-		LOG.debug("startDate = " + date);
+		LOG.debug("startDate = " + startDate);
+		
 		LOG.debug("qty = " + qty);
 		LOG.debug("oper = " + oper);
 		LOG.debug("id = " + id);
@@ -247,10 +248,11 @@ public class WebServicesController {
 		LOG.debug("productName = " + productName);
 		LOG.debug("uom = " + uom);
 		
+		Date date = null;
+		
 		AddItemResponse result = new AddItemResponse();
 		
 		Item item = new Item();
-		item.setStartDate(date);
 		item.setQty(qty);
 		item.setProductName(productName);
 		item.setUom(uom);
@@ -258,7 +260,21 @@ public class WebServicesController {
 		item.setInvestment(investment);
 		
 		try {
-			Integer itemId = mediaPlanDataService.addItemToMediaPlan(mediaPlanId, item);
+			if(oper.equalsIgnoreCase("add")) {
+				date = addFormat.parse(startDate);
+				item.setStartDate(date);
+				LOG.debug("date = " + date);
+				
+				Integer itemId = mediaPlanDataService.addItemToMediaPlan(mediaPlanId, item);
+			}
+			else if(oper.equalsIgnoreCase("edit")) {
+				date = editFormat.parse(startDate);
+				item.setStartDate(date);
+				LOG.debug("date = " + date);
+				
+				item.setId(new Integer(id));
+				mediaPlanDataService.updateMediaPlanItem(mediaPlanId, item);
+			}
 			
 			result.setPayload("Item added successfully");
 			result.setReturnCode(200);
@@ -292,7 +308,7 @@ public class WebServicesController {
 		
 		LOG.debug("inside addUpdateItem3");
 		
-		Date date = format.parse(startDate);
+		Date date = addFormat.parse(startDate);
 		
 		LOG.debug("startDate = " + date);
 		LOG.debug("qty = " + qty);
