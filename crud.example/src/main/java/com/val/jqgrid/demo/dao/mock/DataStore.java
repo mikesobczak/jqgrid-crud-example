@@ -32,10 +32,20 @@ public class DataStore {
 		
 		Item item = new Item();
 		item.setId(1);
-		item.setInvestment(31250);
+		item.setInvestment(3125);
 		item.setProductName("VDP + Email");
 		item.setQty(125000);
 		item.setRate(25);
+		item.setUom("CPM");
+		item.setStartDate(startDate);
+		itemMap.put(item.getId(), item);
+		
+		item = new Item();
+		item.setId(2);
+		item.setInvestment(4940);
+		item.setProductName("VDP + Email");
+		item.setQty(260000);
+		item.setRate(19);
 		item.setUom("CPM");
 		item.setStartDate(startDate);
 		itemMap.put(item.getId(), item);
@@ -137,7 +147,7 @@ public class DataStore {
 		
 		LOG.debug("inside deleteMediaPlanItem");
 		
-		if(list.containsKey(mediaPlanId)) {
+		if(list.containsKey(mediaPlanId) == false) {
 			throw new Exception ("Media Plan not found");
 		}
 		
@@ -146,6 +156,8 @@ public class DataStore {
 		Map<Integer, Item> itemMap = mediaPlan.getItemMap();
 		
 		itemMap.remove(itemId);
+		
+		list.put(mediaPlanId, mediaPlan);
 		
 	}
 

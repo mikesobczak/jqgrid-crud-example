@@ -57,7 +57,7 @@ public class WebServicesController {
 			
 			List<Item> items = mediaPlan.getItems();
 			
-			LOG.debug("mediaPlan: " + mediaPlan);
+			//LOG.debug("mediaPlan: " + mediaPlan);
 			
 			payload.setRows(items);
 			payload.setPage(1);
@@ -103,7 +103,7 @@ public class WebServicesController {
 			
 			List<Item> items = mediaPlan.getItems();
 			
-			LOG.debug("mediaPlan: " + mediaPlan);
+			//LOG.debug("mediaPlan: " + mediaPlan);
 			
 			payload.setRows(items);
 			payload.setPage(1);
@@ -152,16 +152,36 @@ public class WebServicesController {
 		Payload payload = new Payload();
 		
 		try {
+			Integer rowsRequested = new Integer(rows);
 			MediaPlan mediaPlan = mediaPlanDataService.getMediaPlan(new Integer(id));
 			
 			List<Item> items = mediaPlan.getItems();
 			
-			LOG.debug("mediaPlan: " + mediaPlan);
+			//LOG.debug("mediaPlan: " + mediaPlan);
 			
-			payload.setRows(items);
+			payload.setRows(items);  // rows returned
 			payload.setPage(1);
 			payload.setRecords(items.size());
-			payload.setTotal(items.size());
+			
+			// set the "total", the total number of pages available
+			if(rowsRequested == 0) {
+				payload.setTotal(1); // default of 1
+			}
+			else if(items.size() < rowsRequested) {
+				payload.setTotal(1); // default of 1
+			}
+			else {
+				
+				// total pages = total items avail / # rows requested
+				
+				int total = items.size() / rowsRequested;
+				
+				if(items.size() % rowsRequested > 1) {
+					total++;
+				}
+				
+				payload.setTotal(total);  
+			}
 			
 			result.setPayload(payload);
 			result.setReturnCode(200);
@@ -222,16 +242,16 @@ public class WebServicesController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value="/services/mediaplan/addupdateitem", method = RequestMethod.POST)
-	public AddItemResponse addUpdateItem2(
-			@RequestParam("startDate") String startDate,
-			@RequestParam("qty") Integer qty,
+	public AddItemResponse addUpdateItem(
+			@RequestParam(required=false) String startDate,
+			@RequestParam(required=false) Integer qty,
 			@RequestParam("oper") String oper,
 			@RequestParam("id") String id,
 			@RequestParam("mediaPlanId") String mpId,
-			@RequestParam("productName") String productName,
-			@RequestParam("uom") String uom,
-			@RequestParam("rate") Double rate,
-			@RequestParam("investment") Double investment
+			@RequestParam(required=false) String productName,
+			@RequestParam(required=false) String uom,
+			@RequestParam(required=false) Double rate,
+			@RequestParam(required=false) Double investment
 			) throws Exception {
 		
 		LOG.debug("inside addUpdateItem2");
@@ -251,32 +271,49 @@ public class WebServicesController {
 		Date date = null;
 		
 		AddItemResponse result = new AddItemResponse();
+		String payload = "";
 		
-		Item item = new Item();
-		item.setQty(qty);
-		item.setProductName(productName);
-		item.setUom(uom);
-		item.setRate(rate);
-		item.setInvestment(investment);
+		Item item = null;
 		
 		try {
-			if(oper.equalsIgnoreCase("add")) {
-				date = addFormat.parse(startDate);
-				item.setStartDate(date);
-				LOG.debug("date = " + date);
+			
+			if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")) {
 				
-				Integer itemId = mediaPlanDataService.addItemToMediaPlan(mediaPlanId, item);
-			}
-			else if(oper.equalsIgnoreCase("edit")) {
+				item = new Item();
+				item.setQty(qty);
+				item.setProductName(productName);
+				item.setUom(uom);
+				item.setRate(rate);
+				item.setInvestment(investment);
+				
 				date = editFormat.parse(startDate);
+				//date = addFormat.parse(startDate);
+				
 				item.setStartDate(date);
 				LOG.debug("date = " + date);
-				
-				item.setId(new Integer(id));
-				mediaPlanDataService.updateMediaPlanItem(mediaPlanId, item);
 			}
 			
-			result.setPayload("Item added successfully");
+			Integer itemId = null;
+			if(oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")) {
+				itemId = new Integer(id);
+			}
+			
+			if(oper.equalsIgnoreCase("add")) {
+				
+				itemId = mediaPlanDataService.addItemToMediaPlan(mediaPlanId, item);
+			}
+			else if(oper.equalsIgnoreCase("edit")) {
+				
+				item.setId(itemId);
+				mediaPlanDataService.updateMediaPlanItem(mediaPlanId, item);
+			}
+			else if(oper.equalsIgnoreCase("del")) {
+				
+				mediaPlanDataService.deleteMediaPlanItem(mediaPlanId, itemId);
+			}
+			
+			result.setItemId(itemId);
+			result.setPayload("Action processed successfully");
 			result.setReturnCode(200);
 			result.setException("");
 			
@@ -284,42 +321,10 @@ public class WebServicesController {
 		catch (Exception e) {
 			LOG.error(e.getMessage());
 			
-			result.setPayload("Item not added");
+			result.setPayload("Error thrown");
 			result.setReturnCode(500);
 			result.setException(e.getMessage());
 		}
-		
-		return result;
-	}
-	
-	/**
-	 * This was the first pass at an endpoint that would be called by jqgrid.
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value="/services/mediaplan/addupdateitem3", method = RequestMethod.POST)
-	public AddItemResponse addUpdateItem3(@RequestParam("startDate") String startDate,
-			@RequestParam("qty") Integer qty,
-			@RequestParam("oper") String oper,
-			@RequestParam("id") String id
-			) throws Exception {
-		
-		LOG.debug("inside addUpdateItem3");
-		
-		Date date = addFormat.parse(startDate);
-		
-		LOG.debug("startDate = " + date);
-		LOG.debug("qty = " + qty);
-		LOG.debug("oper = " + oper);
-		LOG.debug("id = " + id);
-		
-		AddItemResponse result = new AddItemResponse();
-		
-		result.setPayload("Item added successfully");
-		result.setReturnCode(200);
-		result.setException("");
 		
 		return result;
 	}

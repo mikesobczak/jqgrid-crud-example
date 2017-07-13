@@ -4,6 +4,8 @@ public class AddItemResponse {
 	
 	private String payload;
 	
+	private Integer itemId;
+	
 	private String exception;
 	private Integer returnCode;
 
@@ -27,5 +29,15 @@ public class AddItemResponse {
 	public void setReturnCode(Integer returnCode) {
 		this.returnCode = returnCode;
 	}
+
+	public Integer getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
+	}
+	
+	
 	
 }

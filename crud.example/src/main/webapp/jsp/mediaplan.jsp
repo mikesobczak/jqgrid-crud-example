@@ -50,7 +50,7 @@ $.urlParam = function(name, url) {
         return undefined;
     }
     return results[1] || undefined;
-}
+};
 
 function dateFormatter(cellvalue, options, rowObject) {
 	   
@@ -218,6 +218,123 @@ function dateFormatter(cellvalue, options, rowObject) {
 	
 });
 	
+	var editOptions = 
+    {
+            editCaption: "Edit Item",
+            recreateForm: true,
+			checkOnUpdate : true,
+			checkOnSubmit : false,
+            closeAfterEdit: true,
+            reloadAfterSubmit: true,
+            errorTextFormat: function (data) {
+                return 'Error: ' + data.responseText;
+            },
+            ajaxEditOptions: {
+	            beforeSend: function(jqXHR) {
+	            	jqXHR.setRequestHeader("VAL", "1");
+	            }
+	        },
+			editData: {
+        		mediaPlanId : mpId,
+        		productName : 'VDP + Email'
+        	}
+        	,
+	        onclickSubmit: function (params, postdata){
+	        	//alert('inside onclickSubmit');
+	        	setPricingFields (params, postdata);
+	        	
+	        	return postdata;
+	        },
+			afterSubmit: function (response, postdata, oper) {
+        		
+        		var success = true;
+        		var message = '';
+        		var newId = '';
+        		
+        		if(response.responseJSON.returnCode != 200) {
+        			success = false;
+        			message = response.responseJSON.exception;
+        		}
+        		
+        		return [success, message, newId];
+        		
+        	}
+        };
+        
+    var addOptions = 
+	    {
+	        closeAfterAdd: true,
+	        recreateForm: true,
+	        errorTextFormat: function (data) {
+	            return 'Error: ' + data.responseText;
+	        },
+	        ajaxEditOptions: {
+	            beforeSend: function(jqXHR) {
+	            	jqXHR.setRequestHeader("VAL", "1");
+	            }
+	        },
+			editData: {
+	    		mediaPlanId : mpId,
+	    		productName : 'VDP + Email'
+	    	},
+	        onclickSubmit: function (params, postdata){
+	        	//alert('inside onclickSubmit');
+	
+	        	setPricingFields (params, postdata);
+	        	
+	        	return postdata;
+	        },
+        	afterSubmit: function (response, postdata, oper) {
+        		
+        		var success = true;
+        		var message = '';
+        		var newId = '';
+        		
+        		if(response.responseJSON.returnCode != 200) {
+        			success = false;
+        			message = response.responseJSON.exception;
+        		}
+        		else {
+        			if(oper == 'add') {
+        				newId = response.responseJSON.itemId;
+        			}
+        		}
+        		
+        		return [success, message, newId];
+        		
+        	}
+	    };
+    
+    var deleteOptions = 
+	    {
+            errorTextFormat: function (data) {
+            	console.log('data:' + data);
+            	//return 'Error: ' + data.responseText;
+                return 'Error: data not processed';
+            },
+            ajaxDelOptions: {
+	            beforeSend: function(jqXHR) {
+	            	jqXHR.setRequestHeader("VAL", "1");
+	            }
+	        },
+	        delData: {
+        		mediaPlanId : mpId
+        	},
+        	afterSubmit: function (response, postdata) {
+        		
+        		var success = true;
+        		var message = '';
+        		
+        		if(response.responseJSON.returnCode != 200) {
+        			success = false;
+        			message = response.responseJSON.exception;
+        		}
+        		
+        		return [success, message];
+        		
+        	}
+        };
+	
 	$('#jqGrid').navGrid('#jqGridPager',
             // the buttons to appear on the toolbar of the grid
             { edit: true, 
@@ -229,77 +346,19 @@ function dateFormatter(cellvalue, options, rowObject) {
 				position: "left", 
 				cloneToTop: false,
 				mtype: 'POST',
+				
+				ajaxEditOptions: {
+		            beforeSend: function(jqXHR) {
+		            	jqXHR.setRequestHeader("VAL", "1");
+		            }
+		        },
+				
 				errorTextFormat: function (data) {
                     return 'Error: ' + data.responseText;
                 	}
 				},
-            // options for the Edit Dialog
-            {
-                editCaption: "Edit Item",
-                recreateForm: true,
-				checkOnUpdate : true,
-				checkOnSubmit : true,
-                closeAfterEdit: true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText;
-                },
-                ajaxEditOptions: {
-		            beforeSend: function(jqXHR) {
-		            	jqXHR.setRequestHeader("VAL", "1");
-		            }
-		        },
-				editData: {
-	        		mediaPlanId : mpId,
-	        		productName : 'VDP + Email'
-	        	}
-	        	,
-		        onclickSubmit: function (params, postdata){
-		        	//alert('inside onclickSubmit');
-		        	setPricingFields (params, postdata);
-		        	
-		        	return postdata;
-		        }
-            },
-            // options for the Add Dialog
-            {
-                closeAfterAdd: true,
-                recreateForm: true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText;
-                },
-                ajaxEditOptions: {
-		            beforeSend: function(jqXHR) {
-		            	jqXHR.setRequestHeader("VAL", "1");
-		            }
-		        },
-				editData: {
-	        		mediaPlanId : mpId,
-	        		productName : 'VDP + Email'
-	        	},
-		        onclickSubmit: function (params, postdata){
-		        	//alert('inside onclickSubmit');
-
-		        	setPricingFields (params, postdata);
-		        	
-		        	return postdata;
-		        }
-            },
-            // options for the Delete Dailog
-            {
-                errorTextFormat: function (data) {
-                	console.log('data:' + data);
-                	//return 'Error: ' + data.responseText;
-                    return 'Error: data not processed';
-                },
-                ajaxEditOptions: {
-		            beforeSend: function(jqXHR) {
-		            	jqXHR.setRequestHeader("VAL", "1");
-		            }
-		        },
-				editData: {
-	        		mediaPlanId : function() { return mpId; }
-	        	}
-            }
+				
+            editOptions, addOptions, deleteOptions
             
 	);
 	
@@ -366,7 +425,7 @@ function dateFormatter(cellvalue, options, rowObject) {
     	}
     	
     	if(params.editData.investment === undefined) {
-    		var index = pricingInfo.entries.length - 1
+    		var index = pricingInfo.entries.length - 1;
     		params.editData.uom = pricingInfo.entries[index].uom;
 			params.editData.rate = pricingInfo.entries[index].amount;
 			params.editData.investment = (pricingInfo.entries[index].amount * postdata.qty) / 1000;
