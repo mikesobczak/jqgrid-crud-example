@@ -158,21 +158,25 @@ function dateFormatter(cellvalue, options, rowObject) {
 		
 		{ label: 'Start Date', name: 'startDate', width: 75, 
 				sortable: false,
-				formatter: dateFormatter, 
+				formatter: dateFormatter,
+				
 				align: 'center',
 				editable: true,
 				edittype:"text",
 				editrules : {required: true},
 				editoptions: {
+					date: true,
                     // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
                     // use it to place a third party control to customize the toolbar
                     dataInit: function (element) {
                         $(element).datepicker({
                             id: 'orderDate_datePicker',
-                            dateFormat: 'M/d/yy',
+                            dateFormat: 'm/d/y',
                             //minDate: new Date(2010, 0, 1),
                             maxDate: new Date(2020, 0, 1),
-                            showOn: 'focus'
+                            //showOn: 'focus'
+                            showOn: 'button',
+                            buttonText: 'select'
                         });
                     }
                 }
