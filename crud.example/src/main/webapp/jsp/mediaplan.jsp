@@ -173,7 +173,12 @@ function dateFormatter(cellvalue, options, rowObject) {
                             id: 'orderDate_datePicker',
                             dateFormat: 'm/d/y',
                             //minDate: new Date(2010, 0, 1),
-                            maxDate: new Date(2020, 0, 1),
+                            //maxDate: new Date(2020, 0, 1),
+                            
+                            // These properties limit the dates that can be selected in the picker
+                            minDate: new Date(2017, 6, 1),
+                            maxDate: new Date(2017, 6, 30),
+                            
                             //showOn: 'focus'
                             showOn: 'button',
                             buttonText: 'select'
@@ -196,7 +201,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 			editrules : {required: true, integer: true, minValue: 1}
 			},
 		
-		{ label: 'Rate', name: 'rate', width: 50,
+		{ label: 'Rate', name: 'rate', width: 60,
 				sortable: false,
 				formatter : 'currency',
 				formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ "},
@@ -225,7 +230,7 @@ function dateFormatter(cellvalue, options, rowObject) {
 			checkOnUpdate : true,
 			checkOnSubmit : false,
             closeAfterEdit: true,
-            reloadAfterSubmit: true,
+            reloadAfterSubmit: false,
             errorTextFormat: function (data) {
                 return 'Error: ' + data.responseText;
             },
@@ -265,6 +270,8 @@ function dateFormatter(cellvalue, options, rowObject) {
 	    {
 	        closeAfterAdd: true,
 	        recreateForm: true,
+	        reloadAfterSubmit: false,
+	        addedrow: 'last',
 	        errorTextFormat: function (data) {
 	            return 'Error: ' + data.responseText;
 	        },
@@ -307,6 +314,7 @@ function dateFormatter(cellvalue, options, rowObject) {
     
     var deleteOptions = 
 	    {
+    		reloadAfterSubmit: false,
             errorTextFormat: function (data) {
             	console.log('data:' + data);
             	//return 'Error: ' + data.responseText;
@@ -421,6 +429,7 @@ function dateFormatter(cellvalue, options, rowObject) {
     			params.editData.uom = pricingInfo.entries[i].uom;
     			params.editData.rate = pricingInfo.entries[i].amount;
     			params.editData.investment = (pricingInfo.entries[i].amount * postdata.qty) / 1000;
+    			break;
     		}
     	}
     	

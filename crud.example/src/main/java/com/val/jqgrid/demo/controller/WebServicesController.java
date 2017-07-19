@@ -45,8 +45,8 @@ public class WebServicesController {
 	@RequestMapping(value="/services/mediaplan/{id}", method = RequestMethod.GET)
 	public GetMediaPlanResponse getMediaPlan(@PathVariable(value = "id") String id) {
 		
-		LOG.debug("inside getMediaPlan");
-		LOG.debug("id = " + id);
+		LOG.info("inside getMediaPlan");
+		LOG.info("id = " + id);
 		
 		GetMediaPlanResponse result = new GetMediaPlanResponse();
 		
@@ -91,8 +91,8 @@ public class WebServicesController {
 	//@RequestMapping(value="/services/mediaplan", method = RequestMethod.GET)
 	public GetMediaPlanResponse getMediaPlan(@RequestParam("id") String id, @RequestParam("page") String page, @RequestParam("rows") String rows, HttpSession session) {
 		
-		LOG.debug("inside getMediaPlan");
-		LOG.debug("id = " + id);
+		LOG.info("inside getMediaPlan");
+		LOG.info("id = " + id);
 		
 		GetMediaPlanResponse result = new GetMediaPlanResponse();
 		
@@ -144,8 +144,8 @@ public class WebServicesController {
 			@RequestParam("sord") String sord,
 			HttpSession session) {
 		
-		LOG.debug("inside getMediaPlan");
-		LOG.debug("id = " + id);
+		LOG.info("inside getMediaPlan");
+		LOG.info("id = " + id);
 		
 		GetMediaPlanResponse result = new GetMediaPlanResponse();
 		
@@ -207,11 +207,11 @@ public class WebServicesController {
 	@RequestMapping(value="/services/mediaplan/additem", method = RequestMethod.POST)
 	public AddItemResponse addItemToMediaPlan(@RequestBody AddItemRequest request) {
 		
-		LOG.debug("inside addItemToMediaPlan");
+		LOG.info("inside addItemToMediaPlan");
 		
 		Integer mediaPlanId = request.getMediaPlanId();
 		
-		LOG.debug("media plan id = " + request.getMediaPlanId());
+		LOG.info("media plan id = " + request.getMediaPlanId());
 		
 		AddItemResponse result = new AddItemResponse();
 		
@@ -254,15 +254,13 @@ public class WebServicesController {
 			@RequestParam(required=false) Double investment
 			) throws Exception {
 		
-		LOG.debug("inside addUpdateItem2");
+		LOG.info("inside addUpdateItem2");
+		LOG.info("oper = " + oper);
 		
 		Integer mediaPlanId = new Integer(mpId);
 		
-		
 		LOG.debug("startDate = " + startDate);
-		
 		LOG.debug("qty = " + qty);
-		LOG.debug("oper = " + oper);
 		LOG.debug("id = " + id);
 		LOG.debug("mediaPlanId = " + mediaPlanId);
 		LOG.debug("productName = " + productName);
